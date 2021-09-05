@@ -8,7 +8,9 @@ payload分为两种类型，一种是因为Request类的method和__construct方�
 
 `_method=__construct&filter[]=system&server[REQUEST_METHOD]=ls -al`   
 
-Request类的method方法$this->method可控导致可以调用__contruct()覆盖Request类的filter字段，然后App::run()执行判断debug来决定是否执行$request->param()，并且还有$dispatch['type'] 等于controller或者 method(captcha路由) 时也会执行$request->param()，而$request->param()会进入到input()方法，在这个方法中由于覆盖的filter进入了filterValue(),而该方法中就存在可利用d的call_user_func 函数造成rce
+Request类的method方法$this->method可控导致可以调用__contruct()覆盖Request类的filter字段，然后App::run()执行判断debug来决定是否执行$request->param()，并且还有$dispatch['type'] 等于controller或者 method(captcha路由) 时也会执行$request->param()，而$request->param()会进入到input()方法，在这个方法中由于覆盖的filter进入了filterValue(),而该方法中就存在可利用d的call_user_func 函数造成rce。   
+
+Request 类中的 param、route、get、post、put、delete、patch、request、session、server、env、cookie、input 方法均调用了 filterValue 方法
 - 第二种
 
 `?s=index/\think\Request/input&filter[]=system&data=pwd`   
