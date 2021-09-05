@@ -6,6 +6,8 @@ payload分为两种类型，一种是因为Request类的method和__construct方�
 
 - 第一种
 
+
+
 Request类$this->method可控导致可以调用__contruct()覆盖Request类的filter字段，然后App::run()执行判断debug来决定是否执行$request->param()，并且还有$dispatch['type'] 等于controller或者 method(captcha路由) 时也会执行$request->param()，而$request->param()会进入到input()方法，在这个方法中由于覆盖的filter进入了filterValue(),继续call_user_func()，造成rce
 - 第二种
 
