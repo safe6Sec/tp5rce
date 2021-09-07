@@ -1,8 +1,13 @@
 # tp5rce
-payload
+tp5rce各版本payload。
+最近学了一下tp5rce漏洞，翻了一圈还是y4的payload比较全，特此做个备份，方便有需要时候再来翻。
+
+
 
 # 原理
-payload分为两种类型，一种是因为Request类的method和__construct方法造成的(method可控，配合construct变量覆盖filter导致的)，另一种是因为Request类在兼容模式下获取的控制器没有进行合法校验(兼容模式默认开启,由于没有进行合法校验，导致可以任意类的任意方法)
+payload分为两种类型，一种是因为Request类的method和__construct方法造成的(method可控，配合construct变量覆盖filter导致的)，另一种是因为Request类在兼容模式下获取的控制器没有进行合法校验(兼容模式默认开启,由于没有进行合法校验，导致可以任意类的任意方法)   
+
+核心: 起点Request类的method和__construct造成的变量覆盖，终点filterValue。
 
 - 第一种
 
@@ -15,7 +20,7 @@ Request 类中的 param、route、get、post、put、delete、patch、request、
 
 `?s=index/\think\Request/input&filter[]=system&data=pwd`   
 
-兼容模式，未合法校验传入的控制器，导致任意类方法调用。
+开启兼容模式，未合法校验传入的控制器，导致任意类方法调用。
 
 # payload
 
